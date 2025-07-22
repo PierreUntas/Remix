@@ -84,11 +84,11 @@
 	},
 	"sources": {
 		"contracts/5_Whitelist.sol": {
-			"keccak256": "0x3ceee1cabf5d5415148fa553328ae93fff8c959587ae4e152a5892a21890d159",
+			"keccak256": "0x26bed6728af3ed29047594a61699049eea94adbf1423b54b1cbd2a65015b0027",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://2031bd63d46dd2027959e1d8a23a535e233a1d49543de2a91e2587a8c7d83548",
-				"dweb:/ipfs/Qmd6t35hWsB7D7KdAUR5Y4KoTsR4NMs1gEU4y6kV1Uz56u"
+				"bzz-raw://0962f67a56f5c0b67a2760793ad0f033ad93d5187db509e7d45e9a09df340e9d",
+				"dweb:/ipfs/QmRs9z7PtjHpFrrswCgQMiuKK54QSvASUBQ6Go3pdwsL3r"
 			]
 		}
 	},

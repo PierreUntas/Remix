@@ -2,7 +2,7 @@
 
 pragma solidity >=0.8.2 <0.9.0;
 
-contract Whitelist2 {
+contract Whitelist {
     mapping (address => bool) whitelist;
 
     event Authorize(address _address);
@@ -22,17 +22,3 @@ contract Whitelist2 {
         _;
     }
 }
-
-// mapping (address => uint[]) eleves;
-
-// receive() external payable {
-//     emit EthReceived(msg.sender, msg.value);
-// }
-
-// fallback() external payable {
-//     emit EthReceived(msg.sender, msg.value);
-// }
-
-// function check() private view returns(bool) {
-//     return whitelist[msg.sender];
-// }
