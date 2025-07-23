@@ -9,4 +9,4 @@ contract Token is ERC20 {
     constructor(uint256 initialSupply) ERC20("Pierre Arens Token", "PAT") {
         _mint(msg.sender, initialSupply);
     }
-}
+} 
