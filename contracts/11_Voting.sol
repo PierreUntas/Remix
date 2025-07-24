@@ -74,4 +74,20 @@ contract Voting is Ownable {
 
         return mostVoted;
     }
+
+    // Processus
+    // ------------------------------------
+
+    // Enregistrement des élécteurs
+
+    // Lancement de la session de vote
+
+    // (Période d'enregistrement des votes)
+
+    // Finaliser la session de vote
+
+    // Comptabilier les votes
+    // ------------------------------------
+
+    // getter de la proposition gagnante
 }
