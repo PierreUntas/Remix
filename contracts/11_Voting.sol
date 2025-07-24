@@ -5,10 +5,21 @@ pragma solidity 0.8.30;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 
 contract Voting is Ownable {
+
+    // Define admin
     address public admin;
+    constructor() Ownable(msg.sender) {
+        admin = msg.sender;
+    }
+
+    // State variables
     uint public winningProposalId;
     mapping(address => bool) public whitelist;
+    uint private nonce;
+    Proposal[] public proposals;
+    mapping(address => Voter) public voters;
 
+    // Structs
     struct Voter {
         bool isRegistered;
         bool hasVoted;
@@ -21,34 +32,46 @@ contract Voting is Ownable {
         uint voteCount;
     }
 
+    // Enums
     enum WorkflowStatus {
-        RegisteringVoters,
-        ProposalsRegistrationStarted,
-        ProposalsRegistrationEnded,
-        VotingSessionStarted,
-        VotingSessionEnded,
-        VotesTallied
+        RegisteringVoters, // Inscription des électeurs
+        ProposalsRegistrationStarted, // Enregistrement des propositions commencé
+        ProposalsRegistrationEnded, // Enregistrement des propositions terminé
+        VotingSessionStarted, // Session de vote commencée
+        VotingSessionEnded, // Session de vote terminée
+        VotesTallied // Votes comptabilisés
     }
+
+    // Events
     event VoterRegistered(address voterAddress);
-    event WorkflowStatusChange(
-        WorkflowStatus previousStatus, 
-        WorkflowStatus newStatus);
+    event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
     event ProposalRegistered(uint proposalId);
     event Voted(address voter, uint proposalId);
 
-    constructor() Ownable(msg.sender) {
-        admin = msg.sender;
-    }
-
+    // Functions
     function sendNewProposition(string memory _description) public {
-        // créer nouvel Id
-        // creér un nouvelle porposition
+        nonce++;
+        proposals[nonce] = Proposal(nonce, _description, 0);   
     }
 
-    function sendVote(uint _proposalId) public {
-        // incrémenter le nombre de vote
-        // passer le status du Voter à true
+    function sendVote(uint _proposalId) public view {
+        Voter memory v = voters[msg.sender];
+        require(!v.hasVoted, "do you have already vote");
+        Proposal memory p = proposals[_proposalId];
+        p.voteCount++;
+        v.hasVoted = true;
     }
+
 
     // function pour déterminer la propostion gagnante (et le gagnant)
+    function getMostVotedProposal() public view returns(Proposal memory) {
+        Proposal memory mostVoted = proposals[0];
+
+        for (uint i = 0; i < proposals.length; i++) {
+            if (proposals[i].voteCount > mostVoted.voteCount)
+                mostVoted = proposals[i];
+        }
+
+        return mostVoted;
+    }
 }
