@@ -18,6 +18,7 @@ contract Voting is Ownable {
     uint private nonce;
     Proposal[] public proposals;
     mapping(address => Voter) public voters;
+    WorkflowStatus public workflowStatus;
 
     // Structs
     struct Voter {
@@ -55,6 +56,7 @@ contract Voting is Ownable {
     }
 
     function sendVote(uint _proposalId) public view {
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
         Voter memory v = voters[msg.sender];
         require(!v.hasVoted, "do you have already vote");
         Proposal memory p = proposals[_proposalId];
@@ -62,8 +64,6 @@ contract Voting is Ownable {
         v.hasVoted = true;
     }
 
-
-    // function pour déterminer la propostion gagnante (et le gagnant)
     function getMostVotedProposal() public view returns(Proposal memory) {
         Proposal memory mostVoted = proposals[0];
 
@@ -77,17 +77,20 @@ contract Voting is Ownable {
 
     // Processus
     // ------------------------------------
+    function addToWhitelist(address _address) public { 
+        whitelist[_address] = true;
+    }
 
-    // Enregistrement des élécteurs
+    function registeringVoters() public {
+        require(msg.sender == admin, "You are not the admin");
+        emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
+    }
 
-    // Lancement de la session de vote
-
-    // (Période d'enregistrement des votes)
-
-    // Finaliser la session de vote
-
-    // Comptabilier les votes
+    function proposalsRegistrationEnded() public {
+        require(msg.sender == admin, "You are not the admin");
+        workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
+    }
     // ------------------------------------
 
-    // getter de la proposition gagnante
+    
 }

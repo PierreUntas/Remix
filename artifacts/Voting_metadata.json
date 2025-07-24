@@ -116,6 +116,19 @@
 				"type": "event"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "addToWhitelist",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "admin",
 				"outputs": [
@@ -198,6 +211,13 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "registeringVoters",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -306,6 +326,19 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "workflowStatus",
+				"outputs": [
+					{
+						"internalType": "enum Voting.WorkflowStatus",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -358,11 +391,11 @@
 	},
 	"sources": {
 		"contracts/11_Voting.sol": {
-			"keccak256": "0xcb7c0f303be4e46a81dca1604f361d4c925b5e8189e45611be563c301079acc8",
+			"keccak256": "0x59337b47f2d8cf9be9c8a602eaa465651341a990145213feba60accb7bdb4cf0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4fd0fe55b2998a57700d89f7408930656f8d9e3be1dd0af150bb100482aa7e48",
-				"dweb:/ipfs/QmZHdASXF6BcAHC6J4nxgscJypvNUbtEmwPPnyQk5aUEdS"
+				"bzz-raw://1403b8d4ad9a5ea600f97c9dddce723daf0cf93b871c437b8db3470f627f9828",
+				"dweb:/ipfs/QmcuqCroKRTAVuvM1jqhNaqV4SFsNyM1R3HzyxABwU7Byj"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {
