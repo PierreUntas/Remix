@@ -19,6 +19,7 @@ contract Voting is Ownable {
     Proposal[] public proposals;
     mapping(address => Voter) public voters;
     WorkflowStatus public workflowStatus;
+    Proposal public mostVoted;
 
     // Structs
     struct Voter {
@@ -64,15 +65,17 @@ contract Voting is Ownable {
         v.hasVoted = true;
     }
 
-    function getMostVotedProposal() public view returns(Proposal memory) {
-        Proposal memory mostVoted = proposals[0];
+    function getMostVotedProposal() external view returns(Proposal memory) {
+        return mostVoted;
+    }
+    
+    function computeMostVotedproposal() public {
+        emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted);
 
         for (uint i = 0; i < proposals.length; i++) {
             if (proposals[i].voteCount > mostVoted.voteCount)
                 mostVoted = proposals[i];
         }
-
-        return mostVoted;
     }
 
     // Processus
@@ -89,8 +92,8 @@ contract Voting is Ownable {
     function proposalsRegistrationEnded() public {
         require(msg.sender == admin, "You are not the admin");
         workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
+        emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded);
     }
     // ------------------------------------
 
-    
 }

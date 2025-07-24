@@ -143,6 +143,13 @@
 			},
 			{
 				"inputs": [],
+				"name": "computeMostVotedproposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getMostVotedProposal",
 				"outputs": [
 					{
@@ -166,6 +173,29 @@
 						"internalType": "struct Voting.Proposal",
 						"name": "",
 						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "mostVoted",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "voteCount",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -211,6 +241,13 @@
 					}
 				],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "proposalsRegistrationEnded",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -391,11 +428,11 @@
 	},
 	"sources": {
 		"contracts/11_Voting.sol": {
-			"keccak256": "0x59337b47f2d8cf9be9c8a602eaa465651341a990145213feba60accb7bdb4cf0",
+			"keccak256": "0xaf85211bb771a51dfea67a3270ad5cd5487baa063a8e0d428d8b42ea5e7dd3cb",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1403b8d4ad9a5ea600f97c9dddce723daf0cf93b871c437b8db3470f627f9828",
-				"dweb:/ipfs/QmcuqCroKRTAVuvM1jqhNaqV4SFsNyM1R3HzyxABwU7Byj"
+				"bzz-raw://98a25a80a7620f0b1e21430c5514854e70824b599fc10813dfc165fdf8899d97",
+				"dweb:/ipfs/QmPoTJGuFgyGL54j3yCKkZMiqFXc8MXn6vTLTUJZB1uQod"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {
