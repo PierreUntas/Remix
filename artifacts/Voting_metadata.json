@@ -150,6 +150,20 @@
 			},
 			{
 				"inputs": [],
+				"name": "endProposalsRegistration",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "endVotingSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getMostVotedProposal",
 				"outputs": [
 					{
@@ -245,20 +259,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "proposalsRegistrationEnded",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "registeringVoters",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "renounceOwnership",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -288,6 +288,20 @@
 				"name": "sendVote",
 				"outputs": [],
 				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startProposalsRegistration",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startVotingSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -428,11 +442,11 @@
 	},
 	"sources": {
 		"contracts/11_Voting.sol": {
-			"keccak256": "0xaf85211bb771a51dfea67a3270ad5cd5487baa063a8e0d428d8b42ea5e7dd3cb",
+			"keccak256": "0x1c03eef7e2f6af6b69c1f3121be3100ad3ef6045fa49eab1513613da9c221f3e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://98a25a80a7620f0b1e21430c5514854e70824b599fc10813dfc165fdf8899d97",
-				"dweb:/ipfs/QmPoTJGuFgyGL54j3yCKkZMiqFXc8MXn6vTLTUJZB1uQod"
+				"bzz-raw://4192af2f530f478c4db0f996822b39c6ab758a6ab55569f6362be6aaca0aba73",
+				"dweb:/ipfs/QmcAjBh5nktbRtCcBoafLwWrZRGrRkpzQYU32E5ha6PanE"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {

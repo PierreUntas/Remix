@@ -36,12 +36,12 @@ contract Voting is Ownable {
 
     // Enums
     enum WorkflowStatus {
-        RegisteringVoters, // Inscription des électeurs
-        ProposalsRegistrationStarted, // Enregistrement des propositions commencé
-        ProposalsRegistrationEnded, // Enregistrement des propositions terminé
-        VotingSessionStarted, // Session de vote commencée
-        VotingSessionEnded, // Session de vote terminée
-        VotesTallied // Votes comptabilisés
+        RegisteringVoters,
+        ProposalsRegistrationStarted,
+        ProposalsRegistrationEnded,
+        VotingSessionStarted,
+        VotingSessionEnded,
+        VotesTallied
     }
 
     // Events
@@ -50,12 +50,58 @@ contract Voting is Ownable {
     event ProposalRegistered(uint proposalId);
     event Voted(address voter, uint proposalId);
 
+    
+    function computeMostVotedproposal() public {
+        workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
+        emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.ProposalsRegistrationEnded);
+
+        for (uint i = 0; i < proposals.length; i++) {
+            if (proposals[i].voteCount > mostVoted.voteCount)
+                mostVoted = proposals[i];
+        }
+    }
+
     // Functions
+    function getMostVotedProposal() external view returns(Proposal memory) {
+        return mostVoted;
+    }
+
+    // Process
+    // -------
+    // Voter registration
+    function addToWhitelist(address _address) public onlyOwner {
+        require(workflowStatus == WorkflowStatus.RegisteringVoters, "Registration not started");
+        whitelist[_address] = true;
+    }
+
+    // Starting the proposal registration
+    function startProposalsRegistration() public onlyOwner {
+        workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
+        emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
+    }
+
+    // Voters can make new proposals
     function sendNewProposition(string memory _description) public {
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
+        require(whitelist[msg.sender], "You are not whitelisted");
         nonce++;
         proposals[nonce] = Proposal(nonce, _description, 0);   
     }
 
+    // Stopping the proposal registration
+    function endProposalsRegistration() public onlyOwner {
+        require (workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Proposals registration not started");
+        workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
+        emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded); 
+    }
+
+    // Voting session begins
+    function startVotingSession() public onlyOwner {
+       require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "Proposals registration not ended");
+       workflowStatus = WorkflowStatus.VotingSessionStarted;
+    }
+
+    // Voters can vote for a proposal
     function sendVote(uint _proposalId) public view {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
         Voter memory v = voters[msg.sender];
@@ -65,35 +111,9 @@ contract Voting is Ownable {
         v.hasVoted = true;
     }
 
-    function getMostVotedProposal() external view returns(Proposal memory) {
-        return mostVoted;
+    // Voting session ends
+    function endVotingSession() public onlyOwner {
+        workflowStatus = WorkflowStatus.VotingSessionEnded;
+        emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
-    
-    function computeMostVotedproposal() public {
-        emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted);
-
-        for (uint i = 0; i < proposals.length; i++) {
-            if (proposals[i].voteCount > mostVoted.voteCount)
-                mostVoted = proposals[i];
-        }
-    }
-
-    // Processus
-    // ------------------------------------
-    function addToWhitelist(address _address) public { 
-        whitelist[_address] = true;
-    }
-
-    function registeringVoters() public {
-        require(msg.sender == admin, "You are not the admin");
-        emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
-    }
-
-    function proposalsRegistrationEnded() public {
-        require(msg.sender == admin, "You are not the admin");
-        workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
-        emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded);
-    }
-    // ------------------------------------
-
 }
