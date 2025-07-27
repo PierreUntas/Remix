@@ -6,22 +6,15 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 
 contract Voting is Ownable {
 
-    // Define admin
     address public admin;
-    constructor() Ownable(msg.sender) {
-        admin = msg.sender;
-    }
-
-    // State variables
     uint public winningProposalId;
-    mapping(address => bool) public whitelist;
     uint private nonce;
-    Proposal[] public proposals;
-    mapping(address => Voter) public voters;
     WorkflowStatus public workflowStatus;
     Proposal public mostVoted;
+    Proposal[] public proposals;
+    mapping(address => bool) public whitelist;
+    mapping(address => Voter) public voters;
 
-    // Structs
     struct Voter {
         bool isRegistered;
         bool hasVoted;
@@ -34,7 +27,6 @@ contract Voting is Ownable {
         uint voteCount;
     }
 
-    // Enums
     enum WorkflowStatus {
         RegisteringVoters,
         ProposalsRegistrationStarted,
@@ -44,12 +36,14 @@ contract Voting is Ownable {
         VotesTallied
     }
 
-    // Events
     event VoterRegistered(address voterAddress);
     event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
     event ProposalRegistered(uint proposalId);
     event Voted(address voter, uint proposalId);
 
+    constructor() Ownable(msg.sender) {
+        admin = msg.sender;
+    }
     
     function computeMostVotedproposal() public {
         workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
@@ -61,47 +55,38 @@ contract Voting is Ownable {
         }
     }
 
-    // Functions
     function getMostVotedProposal() external view returns(Proposal memory) {
         return mostVoted;
     }
 
-    // Process
-    // -------
-    // Voter registration
-    function addToWhitelist(address _address) public onlyOwner {
+    function addToWhitelist(address _address) public payable onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Registration not started");
         whitelist[_address] = true;
     }
 
-    // Starting the proposal registration
     function startProposalsRegistration() public onlyOwner {
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }
 
-    // Voters can make new proposals
-    function sendNewProposition(string memory _description) public {
+    function sendNewProposition(string memory _description) public payable {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
         require(whitelist[msg.sender], "You are not whitelisted");
         nonce++;
-        proposals[nonce] = Proposal(nonce, _description, 0);   
+        proposals.push(Proposal(nonce, _description, 0));
     }
 
-    // Stopping the proposal registration
     function endProposalsRegistration() public onlyOwner {
         require (workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Proposals registration not started");
         workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
         emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded); 
     }
 
-    // Voting session begins
     function startVotingSession() public onlyOwner {
        require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "Proposals registration not ended");
        workflowStatus = WorkflowStatus.VotingSessionStarted;
     }
 
-    // Voters can vote for a proposal
     function sendVote(uint _proposalId) public view {
         require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
         Voter memory v = voters[msg.sender];
@@ -111,7 +96,6 @@ contract Voting is Ownable {
         v.hasVoted = true;
     }
 
-    // Voting session ends
     function endVotingSession() public onlyOwner {
         workflowStatus = WorkflowStatus.VotingSessionEnded;
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);

@@ -1,0 +1,144 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "attackerIndex",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "defenderIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "attack",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "createPlayer",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "createZombie",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAllMobs",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "name",
+								"type": "string"
+							},
+							{
+								"internalType": "int256",
+								"name": "level",
+								"type": "int256"
+							},
+							{
+								"internalType": "bool",
+								"name": "isAlive",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct Minecraft.Mob[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getMob",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "name",
+								"type": "string"
+							},
+							{
+								"internalType": "int256",
+								"name": "level",
+								"type": "int256"
+							},
+							{
+								"internalType": "bool",
+								"name": "isAlive",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct Minecraft.Mob",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/12_Minecraft.sol": "Minecraft"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/12_Minecraft.sol": {
+			"keccak256": "0x6fe631f9a6b7df59e5974a69e347c53403235c7d96bee653bc23d9b4f3635db4",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://4a53ea2ba01cbd42832fd9ed8b26378fd1585a89232866388140d99d64add92a",
+				"dweb:/ipfs/QmZ1sQBr7SyZeu4wAoSBAvMPyNJVN6GVV5Ee3Ej96zREGm"
+			]
+		}
+	},
+	"version": 1
+}

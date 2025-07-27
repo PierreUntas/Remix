@@ -125,7 +125,7 @@
 				],
 				"name": "addToWhitelist",
 				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -274,7 +274,7 @@
 				],
 				"name": "sendNewProposition",
 				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "function"
 			},
 			{
@@ -442,11 +442,11 @@
 	},
 	"sources": {
 		"contracts/11_Voting.sol": {
-			"keccak256": "0x1c03eef7e2f6af6b69c1f3121be3100ad3ef6045fa49eab1513613da9c221f3e",
+			"keccak256": "0x3fb925a19bddeb756f615d98670ed347ce0d82a65ed00883a3fee11d63652ddf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4192af2f530f478c4db0f996822b39c6ab758a6ab55569f6362be6aaca0aba73",
-				"dweb:/ipfs/QmcAjBh5nktbRtCcBoafLwWrZRGrRkpzQYU32E5ha6PanE"
+				"bzz-raw://52d220fa4c08b97e891a22e32a686e2b519dac1476c2e7447ac31189ba4c5930",
+				"dweb:/ipfs/QmU6UQBT3sCCHwvWk1oNKN27hnRhw4zyR61Bd9Sqh2Grhp"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {
