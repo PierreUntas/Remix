@@ -46,13 +46,12 @@ contract Voting is Ownable {
     }
     
     function computeMostVotedproposal() public {
-        workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
-        emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.ProposalsRegistrationEnded);
-
+        require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Voting session not ended");
         for (uint i = 0; i < proposals.length; i++) {
             if (proposals[i].voteCount > mostVoted.voteCount)
                 mostVoted = proposals[i];
         }
+        emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.VotesTallied);
     }
 
     function getMostVotedProposal() external view returns(Proposal memory) {
@@ -64,7 +63,7 @@ contract Voting is Ownable {
         whitelist[_address] = true;
     }
 
-    function startProposalsRegistration() public onlyOwner {
+    function startProposalsRegistration() public payable onlyOwner {
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }
@@ -87,16 +86,17 @@ contract Voting is Ownable {
        workflowStatus = WorkflowStatus.VotingSessionStarted;
     }
 
-    function sendVote(uint _proposalId) public view {
-        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
-        Voter memory v = voters[msg.sender];
+    function sendVote(uint _proposalId) public payable {
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "registration did not started");
+        Voter storage v = voters[msg.sender];
         require(!v.hasVoted, "do you have already vote");
-        Proposal memory p = proposals[_proposalId];
+        Proposal storage p = proposals[_proposalId];
         p.voteCount++;
         v.hasVoted = true;
     }
 
     function endVotingSession() public onlyOwner {
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Voting session not started");
         workflowStatus = WorkflowStatus.VotingSessionEnded;
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
