@@ -164,6 +164,36 @@
 			},
 			{
 				"inputs": [],
+				"name": "getAllProposals",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "id",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "description",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "voteCount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Voting.Proposal[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getMostVotedProposal",
 				"outputs": [
 					{
@@ -187,6 +217,25 @@
 						"internalType": "struct Voting.Proposal",
 						"name": "",
 						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "isWhitelisted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -294,7 +343,7 @@
 				"inputs": [],
 				"name": "startProposalsRegistration",
 				"outputs": [],
-				"stateMutability": "payable",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -442,11 +491,11 @@
 	},
 	"sources": {
 		"contracts/11_Voting.sol": {
-			"keccak256": "0xaabccf1edf1566d8bdbcd868dfce2a1e3bbcbb5bee3841c2273433c98bb88fd0",
+			"keccak256": "0x6af65bdf4d43cb7ad7342e4a0638d18817f647d0856169fbf3d931f46ce086d4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5fd77cd2629ffb3307c511d450cdad1e8c753ce6f3d268392f1fd74464914d26",
-				"dweb:/ipfs/QmQdRrG44cbtQwgYAH7iHofK7ziVmTu1Wd3qLgXKwq4mWe"
+				"bzz-raw://cf89d905224d009f5c298efd8c2c3bfda5d07407e1efb04593972d262fa0b09d",
+				"dweb:/ipfs/QmbstJW8ytGxQ7ZBC32HE6C7GtPc4rU9Fx56DYsGewwduH"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {

@@ -12,6 +12,7 @@ contract Admin is Ownable {
     constructor() Ownable (msg.sender) {
         admin = msg.sender;
     }
+    
     event Whitelisted(address _account);
     event Blacklisted(address _account );
 
