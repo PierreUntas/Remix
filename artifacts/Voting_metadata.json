@@ -57,6 +57,12 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
 						"name": "proposalId",
 						"type": "uint256"
 					}
@@ -186,7 +192,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_sessiondId",
+						"name": "_sessionId",
 						"type": "uint256"
 					}
 				],
@@ -285,6 +291,11 @@
 								"internalType": "struct Voting.Proposal[]",
 								"name": "proposals",
 								"type": "tuple[]"
+							},
+							{
+								"internalType": "uint256",
+								"name": "proposalCount",
+								"type": "uint256"
 							}
 						],
 						"internalType": "struct Voting.VotingSession",
@@ -308,39 +319,22 @@
 					{
 						"components": [
 							{
-								"internalType": "enum Voting.WorkflowStatus",
-								"name": "workflowStatus",
-								"type": "uint8"
-							},
-							{
 								"internalType": "uint256",
-								"name": "winningProposalId",
+								"name": "id",
 								"type": "uint256"
 							},
 							{
-								"components": [
-									{
-										"internalType": "uint256",
-										"name": "id",
-										"type": "uint256"
-									},
-									{
-										"internalType": "string",
-										"name": "description",
-										"type": "string"
-									},
-									{
-										"internalType": "uint256",
-										"name": "voteCount",
-										"type": "uint256"
-									}
-								],
-								"internalType": "struct Voting.Proposal[]",
-								"name": "proposals",
-								"type": "tuple[]"
+								"internalType": "string",
+								"name": "description",
+								"type": "string"
+							},
+							{
+								"internalType": "uint256",
+								"name": "voteCount",
+								"type": "uint256"
 							}
 						],
-						"internalType": "struct Voting.VotingSession",
+						"internalType": "struct Voting.Proposal",
 						"name": "",
 						"type": "tuple"
 					}
@@ -450,25 +444,6 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "voters",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "isRegistered",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
@@ -484,6 +459,11 @@
 					{
 						"internalType": "uint256",
 						"name": "winningProposalId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "proposalCount",
 						"type": "uint256"
 					}
 				],
@@ -526,7 +506,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/12_VotingV2.sol": "Voting"
+			"contracts/14_VotingV4.sol": "Voting"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -540,12 +520,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/12_VotingV2.sol": {
-			"keccak256": "0x6579d77fb3877130bc0bd7461fd249f02463620cbd796cf5eb6e38ce31911c43",
+		"contracts/14_VotingV4.sol": {
+			"keccak256": "0xccb101e77dea47ce6096119ea19f4fd3a6a84f28fa0a2ed2c591919926d80c33",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2eb29776ea4b0f11999fe1236d1c1e7e0b99aaec63c9abb63533653e3701c9e0",
-				"dweb:/ipfs/QmWSk1WeEDAy43jn7QRNew1yBrfhMNb8ek9UxWtffvLq9X"
+				"bzz-raw://ef92fccde720fd092978587bf8de5fed4a81c471742ba92f7d32095a1c12551b",
+				"dweb:/ipfs/QmYGy463ts1t2zT5RTwcfzcdWsa1DzxVHJraxmEcAKsqJS"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {
