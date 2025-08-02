@@ -46,6 +46,7 @@ contract Voting is Ownable {
     event SessionCreated(uint sessionId);
 
     constructor() Ownable(msg.sender){
+        createVotingSession();
     }
 
     modifier onlyIfRegistered() {

@@ -57,30 +57,11 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "sessionId",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
 						"name": "proposalId",
 						"type": "uint256"
 					}
 				],
 				"name": "ProposalRegistered",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "sessionId",
-						"type": "uint256"
-					}
-				],
-				"name": "SessionCreated",
 				"type": "event"
 			},
 			{
@@ -120,19 +101,6 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "address",
-						"name": "voterAddress",
-						"type": "address"
-					}
-				],
-				"name": "VoterUnregistered",
-				"type": "event"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
 						"internalType": "enum Voting.WorkflowStatus",
 						"name": "previousStatus",
 						"type": "uint8"
@@ -148,30 +116,23 @@
 				"type": "event"
 			},
 			{
-				"inputs": [],
-				"name": "computeMostVotedProposal",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "createVotingSession",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "currentVotingSessionId",
-				"outputs": [
+				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
 					}
 				],
-				"stateMutability": "view",
+				"name": "addToWhitelist",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "computeMostVotedproposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -189,22 +150,11 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_sessionId",
-						"type": "uint256"
-					}
-				],
-				"name": "getAllProposalsBySession",
+				"inputs": [],
+				"name": "getAllProposals",
 				"outputs": [
 					{
 						"components": [
-							{
-								"internalType": "uint256",
-								"name": "id",
-								"type": "uint256"
-							},
 							{
 								"internalType": "string",
 								"name": "description",
@@ -226,15 +176,10 @@
 			},
 			{
 				"inputs": [],
-				"name": "getAllProposalsFromCurrentSession",
+				"name": "getMostVotedProposal",
 				"outputs": [
 					{
 						"components": [
-							{
-								"internalType": "uint256",
-								"name": "id",
-								"type": "uint256"
-							},
 							{
 								"internalType": "string",
 								"name": "description",
@@ -246,59 +191,7 @@
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct Voting.Proposal[]",
-						"name": "",
-						"type": "tuple[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getCurrentSession",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "enum Voting.WorkflowStatus",
-								"name": "workflowStatus",
-								"type": "uint8"
-							},
-							{
-								"internalType": "uint256",
-								"name": "winningProposalId",
-								"type": "uint256"
-							},
-							{
-								"components": [
-									{
-										"internalType": "uint256",
-										"name": "id",
-										"type": "uint256"
-									},
-									{
-										"internalType": "string",
-										"name": "description",
-										"type": "string"
-									},
-									{
-										"internalType": "uint256",
-										"name": "voteCount",
-										"type": "uint256"
-									}
-								],
-								"internalType": "struct Voting.Proposal[]",
-								"name": "proposals",
-								"type": "tuple[]"
-							},
-							{
-								"internalType": "uint256",
-								"name": "proposalCount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Voting.VotingSession",
+						"internalType": "struct Voting.Proposal",
 						"name": "",
 						"type": "tuple"
 					}
@@ -310,19 +203,14 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_sessionId",
+						"name": "_index",
 						"type": "uint256"
 					}
 				],
-				"name": "getWinningProposalBySession",
+				"name": "getProposalByIndex",
 				"outputs": [
 					{
 						"components": [
-							{
-								"internalType": "uint256",
-								"name": "id",
-								"type": "uint256"
-							},
 							{
 								"internalType": "string",
 								"name": "description",
@@ -344,6 +232,38 @@
 			},
 			{
 				"inputs": [],
+				"name": "getWorkflowStatus",
+				"outputs": [
+					{
+						"internalType": "enum Voting.WorkflowStatus",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "isWhitelisted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "owner",
 				"outputs": [
 					{
@@ -358,14 +278,25 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_address",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
-				"name": "registerVoter",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"name": "proposals",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "voteCount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -392,7 +323,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_proposalId",
+						"name": "_proposalIndex",
 						"type": "uint256"
 					}
 				],
@@ -432,39 +363,71 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_address",
+						"name": "",
 						"type": "address"
 					}
 				],
-				"name": "unregisterVoter",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"name": "voters",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "isRegistered",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "hasVoted",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "voteProposalId",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "whitelist",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "winningProposalId",
+				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
 					}
 				],
-				"name": "votingSessions",
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "workflowStatus",
 				"outputs": [
 					{
 						"internalType": "enum Voting.WorkflowStatus",
-						"name": "workflowStatus",
+						"name": "",
 						"type": "uint8"
-					},
-					{
-						"internalType": "uint256",
-						"name": "winningProposalId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "proposalCount",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -506,7 +469,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/14_VotingV4.sol": "Voting"
+			"contracts/11_Voting_withTest.sol": "Voting"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -520,12 +483,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/14_VotingV4.sol": {
-			"keccak256": "0xccb101e77dea47ce6096119ea19f4fd3a6a84f28fa0a2ed2c591919926d80c33",
+		"contracts/11_Voting_withTest.sol": {
+			"keccak256": "0x7059f31d525db6dacca363430965c9514fea2b5f601e4e94ee51284a11f98c2f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://ef92fccde720fd092978587bf8de5fed4a81c471742ba92f7d32095a1c12551b",
-				"dweb:/ipfs/QmYGy463ts1t2zT5RTwcfzcdWsa1DzxVHJraxmEcAKsqJS"
+				"bzz-raw://cfd53ce6e2582c8d8ef164e26ac5d1f97aa3df7368ba35f1a4b76c1a46e15e47",
+				"dweb:/ipfs/QmUNyR1aG4DE5NfBmqckxRmGye9fvrGDAtDRvDgzj1jrrF"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {
