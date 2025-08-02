@@ -19,6 +19,7 @@ contract Voting is Ownable {
     }
 
     struct Proposal {
+        uint id;
         string description;
         uint voteCount;
     }
@@ -38,17 +39,15 @@ contract Voting is Ownable {
     event Voted(address voter, uint proposalId);
 
     constructor() Ownable(msg.sender) {
-        // addToWhitelist(0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2);
-        // addToWhitelist(0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db);
-        // addToWhitelist(0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB);
-        // isWhitelisted(0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB);
-        // startProposalsRegistration();
     }
 
     function addToWhitelist(address _address) public onlyOwner {
         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Registration not started");
-        require(whitelist[_address] == false, "address is already in the whitelist");
         whitelist[_address] = true;
+        Voter storage voter = voters[_address];
+        voter.isRegistered = true;
+        emit VoterRegistered(_address);
+
     }
 
     function isWhitelisted(address _address) public view returns (bool) {
@@ -56,29 +55,20 @@ contract Voting is Ownable {
     }
 
     function startProposalsRegistration() public onlyOwner {
-        require(workflowStatus == WorkflowStatus.RegisteringVoters, "Registering voters did not start");
         workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
         emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }
 
-    function getWorkflowStatus() public view returns(WorkflowStatus) {
-        return workflowStatus;
-    }
-
     function sendNewProposition(string memory _description) public {
-        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Registration propositions did not started");
-        require(whitelist[msg.sender], "You are not whitelisted");
-        proposals.push(Proposal(_description, 0));
-        emit ProposalRegistered(proposals.length - 1);
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
+        require(voters[msg.sender].isRegistered, "You are not registered");
+        uint newProposalId = proposals.length;
+        proposals.push(Proposal(newProposalId, _description, 0));
+        emit ProposalRegistered(newProposalId);
     }
 
     function getAllProposals() external view returns(Proposal[] memory) {
         return proposals;
-    }
-
-    function getProposalByIndex(uint _index) external view returns(Proposal memory) {
-          require(_index < proposals.length, "Proposal does not exist");
-        return proposals[_index];
     }
     
     function endProposalsRegistration() public onlyOwner {
@@ -92,28 +82,26 @@ contract Voting is Ownable {
        workflowStatus = WorkflowStatus.VotingSessionStarted;
        emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted); 
     }
-
-    function sendVote(uint _proposalIndex) public {
-        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "registration did not started");
-        require(_proposalIndex < proposals.length, "Proposal does not exist");
-        Voter storage v = voters[msg.sender];
-        require (v.isRegistered, "you are not registered");
-        require(!v.hasVoted, "do you have already vote");
-        Proposal storage p = proposals[_proposalIndex];
-        p.voteCount++;
-        v.hasVoted = true;
-        v.voteProposalId = _proposalIndex;
-        emit Voted(msg.sender, _proposalIndex);
-    }
     
+    function sendVote(uint _proposalId) public {
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "registration did not started");
+        Voter storage voter = voters[msg.sender];
+        require(!voter.hasVoted, "do you have already vote");
+        Proposal storage proposal = proposals[_proposalId];
+        proposal.voteCount++;
+        voter.hasVoted = true;
+        voter.voteProposalId = _proposalId;
+    }
+
+
     function endVotingSession() public onlyOwner {
         require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Voting session not started");
         workflowStatus = WorkflowStatus.VotingSessionEnded;
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
-    
+
     // Penser a calculer les égalités et créer un nouvelle session de vote avec ces propositions
-    function computeMostVotedproposal() public {
+    function computeMostVotedproposal2() public {
         require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Voting session not ended");
         uint winningIndex;
         uint highestVoteCount;

@@ -130,7 +130,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "computeMostVotedproposal",
+				"name": "computeMostVotedproposal2",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -155,6 +155,11 @@
 				"outputs": [
 					{
 						"components": [
+							{
+								"internalType": "uint256",
+								"name": "id",
+								"type": "uint256"
+							},
 							{
 								"internalType": "string",
 								"name": "description",
@@ -181,36 +186,10 @@
 					{
 						"components": [
 							{
-								"internalType": "string",
-								"name": "description",
-								"type": "string"
-							},
-							{
 								"internalType": "uint256",
-								"name": "voteCount",
+								"name": "id",
 								"type": "uint256"
-							}
-						],
-						"internalType": "struct Voting.Proposal",
-						"name": "",
-						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_index",
-						"type": "uint256"
-					}
-				],
-				"name": "getProposalByIndex",
-				"outputs": [
-					{
-						"components": [
+							},
 							{
 								"internalType": "string",
 								"name": "description",
@@ -225,19 +204,6 @@
 						"internalType": "struct Voting.Proposal",
 						"name": "",
 						"type": "tuple"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getWorkflowStatus",
-				"outputs": [
-					{
-						"internalType": "enum Voting.WorkflowStatus",
-						"name": "",
-						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
@@ -286,6 +252,11 @@
 				"name": "proposals",
 				"outputs": [
 					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
 						"internalType": "string",
 						"name": "description",
 						"type": "string"
@@ -323,7 +294,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_proposalIndex",
+						"name": "_proposalId",
 						"type": "uint256"
 					}
 				],
@@ -469,7 +440,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/11_Voting_withTest.sol": "Voting"
+			"contracts/Voting.sol": "Voting"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -483,12 +454,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/11_Voting_withTest.sol": {
-			"keccak256": "0x7059f31d525db6dacca363430965c9514fea2b5f601e4e94ee51284a11f98c2f",
+		"contracts/Voting.sol": {
+			"keccak256": "0x2248deac5a480debfd95d18f0664b8dbfb63ce452692228be1a3a6f359f95188",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://cfd53ce6e2582c8d8ef164e26ac5d1f97aa3df7368ba35f1a4b76c1a46e15e47",
-				"dweb:/ipfs/QmUNyR1aG4DE5NfBmqckxRmGye9fvrGDAtDRvDgzj1jrrF"
+				"bzz-raw://1776fa077b44dcc4dc2f9f571c116e124757df7f0ec110fbaf2287594acd94de",
+				"dweb:/ipfs/QmRJT5DVoiMBwqEFYJSwicpLqhJZsU26nPeBhUHS9bFmKp"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {
