@@ -38,7 +38,7 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "sessionsId",
+						"name": "sessionId",
 						"type": "uint256"
 					}
 				],
@@ -70,6 +70,12 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
 						"name": "proposalId",
 						"type": "uint256"
 					}
@@ -80,6 +86,12 @@
 			{
 				"anonymous": false,
 				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
 					{
 						"indexed": false,
 						"internalType": "address",
@@ -101,17 +113,29 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "address",
-						"name": "voterAddress",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "proposalId",
+						"type": "uint256"
 					}
 				],
-				"name": "VoterRegistered",
+				"name": "WinnerDeclared",
 				"type": "event"
 			},
 			{
 				"anonymous": false,
 				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
 					{
 						"indexed": false,
 						"internalType": "enum Voting.WorkflowStatus",
@@ -132,7 +156,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_address",
+						"name": "_voter",
 						"type": "address"
 					}
 				],
@@ -142,7 +166,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
 				"name": "computeMostVotedProposal",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -156,14 +186,26 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
 				"name": "endProposalsRegistration",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
 				"name": "endVotingSession",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -173,7 +215,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_sessionId",
+						"name": "sessionId",
 						"type": "uint256"
 					}
 				],
@@ -213,8 +255,51 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
+				"name": "getWorkflowStatus",
+				"outputs": [
+					{
+						"internalType": "enum Voting.WorkflowStatus",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
+					{
 						"internalType": "address",
-						"name": "_address",
+						"name": "voter",
+						"type": "address"
+					}
+				],
+				"name": "hasVoted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_voter",
 						"type": "address"
 					}
 				],
@@ -245,34 +330,12 @@
 			{
 				"inputs": [
 					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "proposalId",
-								"type": "uint256"
-							},
-							{
-								"internalType": "string",
-								"name": "description",
-								"type": "string"
-							},
-							{
-								"internalType": "address",
-								"name": "submitter",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "voteCount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Voting.Proposal[]",
-						"name": "bestProposals",
-						"type": "tuple[]"
+						"internalType": "address",
+						"name": "_voter",
+						"type": "address"
 					}
 				],
-				"name": "renewSession",
+				"name": "removeFromWhitelist",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -286,6 +349,11 @@
 			},
 			{
 				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
 					{
 						"internalType": "string",
 						"name": "_description",
@@ -301,6 +369,11 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "_proposalId",
 						"type": "uint256"
 					}
@@ -312,13 +385,38 @@
 			},
 			{
 				"inputs": [],
+				"name": "sessionCounter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
 				"name": "startProposalsRegistration",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					}
+				],
 				"name": "startVotingSession",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -345,44 +443,12 @@
 						"type": "address"
 					}
 				],
-				"name": "voters",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "voterAddress",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
 				"name": "whitelist",
 				"outputs": [
 					{
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "workflowStatus",
-				"outputs": [
-					{
-						"internalType": "enum Voting.WorkflowStatus",
-						"name": "",
-						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
@@ -424,7 +490,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Voting.sol": "Voting"
+			"contracts/VotingSessions.sol": "Voting"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -438,15 +504,7 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Voting.sol": {
-			"keccak256": "0xa92f81d2b2751e6258f2f93e162fdfde0af8490d9e3ae86072e00e4aac640cc6",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://b565743534779c1c83b413518aa9e4e8f3c47ec7c1df0234b7bef1e47264a958",
-				"dweb:/ipfs/QmYqdfnezZX1w4U6L2Tg6hSDdmpipCpUQHLbWyXFWff2PC"
-			]
-		},
-		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {
+		"@openzeppelin/contracts/access/Ownable.sol": {
 			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
 			"license": "MIT",
 			"urls": [
@@ -454,12 +512,20 @@
 				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
 			]
 		},
-		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol": {
+		"@openzeppelin/contracts/utils/Context.sol": {
 			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+			]
+		},
+		"contracts/VotingSessions.sol": {
+			"keccak256": "0x7e30e4d06b75021ae6a6c66725cc57fd36d37a0434b3a99a2335b50a0e6f7a0e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8abd815e16793e5d9c86980e0174fab410fc5750e662eb06f1323c25024c0f1b",
+				"dweb:/ipfs/QmSJ3wLh9eooWTzJUbHLdfZE573Z3ykkDPofppWsyLuxmv"
 			]
 		}
 	},
