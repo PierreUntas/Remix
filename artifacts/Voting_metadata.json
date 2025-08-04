@@ -36,6 +36,19 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sessionsId",
+						"type": "uint256"
+					}
+				],
+				"name": "NewVotingSession",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "address",
 						"name": "previousOwner",
@@ -130,7 +143,14 @@
 			},
 			{
 				"inputs": [],
-				"name": "computeMostVotedproposal2",
+				"name": "computeMostVotedProposal",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "createSession",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -150,20 +170,31 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "getAllProposals",
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_sessionId",
+						"type": "uint256"
+					}
+				],
+				"name": "getAllProposalsBySession",
 				"outputs": [
 					{
 						"components": [
 							{
 								"internalType": "uint256",
-								"name": "id",
+								"name": "proposalId",
 								"type": "uint256"
 							},
 							{
 								"internalType": "string",
 								"name": "description",
 								"type": "string"
+							},
+							{
+								"internalType": "address",
+								"name": "submitter",
+								"type": "address"
 							},
 							{
 								"internalType": "uint256",
@@ -174,36 +205,6 @@
 						"internalType": "struct Voting.Proposal[]",
 						"name": "",
 						"type": "tuple[]"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "getMostVotedProposal",
-				"outputs": [
-					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "id",
-								"type": "uint256"
-							},
-							{
-								"internalType": "string",
-								"name": "description",
-								"type": "string"
-							},
-							{
-								"internalType": "uint256",
-								"name": "voteCount",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Voting.Proposal",
-						"name": "",
-						"type": "tuple"
 					}
 				],
 				"stateMutability": "view",
@@ -244,30 +245,36 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "proposalId",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "description",
+								"type": "string"
+							},
+							{
+								"internalType": "address",
+								"name": "submitter",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "voteCount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Voting.Proposal[]",
+						"name": "bestProposals",
+						"type": "tuple[]"
 					}
 				],
-				"name": "proposals",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "id",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "description",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "voteCount",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
+				"name": "renewSession",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -341,19 +348,9 @@
 				"name": "voters",
 				"outputs": [
 					{
-						"internalType": "bool",
-						"name": "isRegistered",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "hasVoted",
-						"type": "bool"
-					},
-					{
-						"internalType": "uint256",
-						"name": "voteProposalId",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "voterAddress",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -373,19 +370,6 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "winningProposalId",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -455,11 +439,11 @@
 	},
 	"sources": {
 		"contracts/Voting.sol": {
-			"keccak256": "0x2248deac5a480debfd95d18f0664b8dbfb63ce452692228be1a3a6f359f95188",
+			"keccak256": "0xa92f81d2b2751e6258f2f93e162fdfde0af8490d9e3ae86072e00e4aac640cc6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1776fa077b44dcc4dc2f9f571c116e124757df7f0ec110fbaf2287594acd94de",
-				"dweb:/ipfs/QmRJT5DVoiMBwqEFYJSwicpLqhJZsU26nPeBhUHS9bFmKp"
+				"bzz-raw://b565743534779c1c83b413518aa9e4e8f3c47ec7c1df0234b7bef1e47264a958",
+				"dweb:/ipfs/QmYqdfnezZX1w4U6L2Tg6hSDdmpipCpUQHLbWyXFWff2PC"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {

@@ -1,0 +1,140 @@
+// SPDX-License-Identifier: MIT
+
+pragma solidity 0.8.30;
+
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
+
+contract Voting is Ownable {
+
+    uint public actualSessionId;
+    uint public lastProposalId;
+    mapping(uint => Session) public sessions;
+    mapping(address => bool) public whitelist;
+    mapping(address => Voter) public voters;
+    WorkflowStatus public workflowStatus;
+
+    struct Session {
+        uint winningProposalId;
+        Proposal[] proposals;
+    }
+
+    struct Voter {
+        mapping(uint => bool) hasVotedSession;
+        mapping(uint => bool) votedProposalsIds;
+        mapping(uint => bool) proposalsOwnerIds;
+    }
+
+    struct Proposal {
+        uint id;
+        string description;
+        uint voteCount;
+    }
+
+    enum WorkflowStatus {
+        RegisteringVoters,
+        ProposalsRegistrationStarted,
+        ProposalsRegistrationEnded,
+        VotingSessionStarted,
+        VotingSessionEnded,
+        VotesTallied
+    }
+
+    event SessionCreated(uint sessionId);
+    event VoterRegistered(address voterAddress);
+    event WorkflowStatusChange(WorkflowStatus previousStatus, WorkflowStatus newStatus);
+    event ProposalRegistered(uint proposalId);
+    event Voted(address voter, uint proposalId);
+
+    constructor() Ownable(msg.sender) {
+    }
+
+    // en créer une avec propositions en paramètres
+
+    function createSession() public onlyOwner {
+         require(workflowStatus == WorkflowStatus.RegisteringVoters, "Registration not started");
+        actualSessionId++;
+        Session storage s = Session(actualSessionId);
+        emit SessionCreated(actualSessionId);
+    }
+
+    function addToWhitelist(address _address) public onlyOwner {
+        require(workflowStatus == WorkflowStatus.RegisteringVoters, "Registration not started");
+        whitelist[_address] = true;
+        Voter storage voter = voters[_address];
+        voter.isRegistered = true;
+        emit VoterRegistered(_address);
+
+    }
+
+    function isWhitelisted(address _address) public view returns (bool) {
+        return whitelist[_address];
+    }
+
+    function startProposalsRegistration() public onlyOwner {
+        workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
+        emit WorkflowStatusChange(WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
+    }
+
+    function sendNewProposition(uint sessionId ,string memory _description) public {
+        require(workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
+        require(whitelist[msg.sender], "You are not registered");
+        Session storage actualSession = sessions[sessionId];
+        lastProposalId ++;
+        actualSession.proposals.push(Proposal(lastProposalId,_description,0));
+        emit ProposalRegistered(lastProposalId);
+    }
+
+
+    function getAllProposals(uint sessionId) external view returns(Proposal[] memory) {
+        return sessions[sessionId].proposals;
+    }
+    
+    // Je suis ici
+    
+    function endProposalsRegistration() public onlyOwner {
+        require (workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Proposals registration not started");
+        workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
+        emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded); 
+    }
+
+    function startVotingSession() public onlyOwner {
+       require(workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "Proposals registration not ended");
+       workflowStatus = WorkflowStatus.VotingSessionStarted;
+       emit WorkflowStatusChange(WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted); 
+    }
+    
+    function sendVote(uint _proposalId) public {
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "registration did not started");
+        Voter storage voter = voters[msg.sender];
+        require(!voter.hasVoted, "do you have already vote");
+        Proposal storage proposal = proposals[_proposalId];
+        proposal.voteCount++;
+        voter.hasVoted = true;
+        voter.voteProposalId = _proposalId;
+    }
+
+
+    function endVotingSession() public onlyOwner {
+        require(workflowStatus == WorkflowStatus.VotingSessionStarted, "Voting session not started");
+        workflowStatus = WorkflowStatus.VotingSessionEnded;
+        emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
+    }
+
+    // Penser a calculer les égalités et créer une nouvelle session de vote avec ces propositions
+    function computeMostVotedproposal2() public {
+        require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Voting session not ended");
+        uint winningIndex;
+        uint highestVoteCount;
+        for (uint i = 0; i < proposals.length; i++) {
+            if (proposals[i].voteCount > highestVoteCount)
+                winningIndex = i;
+        }
+        winningProposalId = winningIndex;
+        workflowStatus = WorkflowStatus.VotesTallied;
+        emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.VotesTallied);
+    }
+
+    function getMostVotedProposal() external view returns(Proposal memory) {
+        return proposals[winningProposalId];
+    }
+}
