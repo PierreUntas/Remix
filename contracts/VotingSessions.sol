@@ -25,7 +25,7 @@ contract Voting is Ownable {
         uint id;
         WorkflowStatus workflowStatus;
         uint proposalIdCounter;
-        uint winningProposalId;
+        uint winningProposalIndex;
         uint highestVoteCount;
         Proposal[] proposals;
         mapping (address => bool) hasVoted;
@@ -121,7 +121,6 @@ contract Voting is Ownable {
         emit Voted(sessionId, msg.sender, _proposalId);
     }
 
-
     function endVotingSession(uint sessionId) public onlyOwner {
         Session storage currentSession = sessions[sessionId];
         require(currentSession.workflowStatus == WorkflowStatus.VotingSessionStarted, "Voting session not started");
@@ -144,12 +143,12 @@ contract Voting is Ownable {
         for (uint i = 0; i < proposals.length; i++) {
             if(proposals[i].voteCount == currentSession.highestVoteCount) {
                 bestProposals[index] = proposals[i];
-                currentSession.winningProposalId = i;
+                currentSession.winningProposalIndex = i;
                 index++;
             }
         }
         if(bestProposals.length == 1) {
-            emit WinningProposition(sessionId, currentSession.winningProposalId);
+            emit WinningProposition(sessionId, currentSession.winningProposalIndex);
         }
         else {
             renewSession(bestProposals);
