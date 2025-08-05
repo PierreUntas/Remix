@@ -91,6 +91,19 @@
 						"internalType": "uint256",
 						"name": "sessionId",
 						"type": "uint256"
+					}
+				],
+				"name": "RenewSession",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
 					},
 					{
 						"indexed": false,
@@ -113,6 +126,25 @@
 				"inputs": [
 					{
 						"indexed": false,
+						"internalType": "address",
+						"name": "voterAddress",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "isWhitelisted",
+						"type": "bool"
+					}
+				],
+				"name": "WhitelistUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
 						"internalType": "uint256",
 						"name": "sessionId",
 						"type": "uint256"
@@ -120,11 +152,11 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "proposalId",
+						"name": "propositionId",
 						"type": "uint256"
 					}
 				],
-				"name": "WinnerDeclared",
+				"name": "WinningProposition",
 				"type": "event"
 			},
 			{
@@ -151,19 +183,6 @@
 				],
 				"name": "WorkflowStatusChange",
 				"type": "event"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_voter",
-						"type": "address"
-					}
-				],
-				"name": "addToWhitelist",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
 			},
 			{
 				"inputs": [
@@ -215,7 +234,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "sessionId",
+						"name": "_sessionId",
 						"type": "uint256"
 					}
 				],
@@ -223,11 +242,6 @@
 				"outputs": [
 					{
 						"components": [
-							{
-								"internalType": "uint256",
-								"name": "proposalId",
-								"type": "uint256"
-							},
 							{
 								"internalType": "string",
 								"name": "description",
@@ -255,51 +269,8 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "sessionId",
-						"type": "uint256"
-					}
-				],
-				"name": "getWorkflowStatus",
-				"outputs": [
-					{
-						"internalType": "enum Voting.WorkflowStatus",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "sessionId",
-						"type": "uint256"
-					},
-					{
 						"internalType": "address",
-						"name": "voter",
-						"type": "address"
-					}
-				],
-				"name": "hasVoted",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_voter",
+						"name": "_address",
 						"type": "address"
 					}
 				],
@@ -330,12 +301,29 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_voter",
-						"type": "address"
+						"components": [
+							{
+								"internalType": "string",
+								"name": "description",
+								"type": "string"
+							},
+							{
+								"internalType": "address",
+								"name": "submitter",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "voteCount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Voting.Proposal[]",
+						"name": "bestProposals",
+						"type": "tuple[]"
 					}
 				],
-				"name": "removeFromWhitelist",
+				"name": "renewSession",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -384,19 +372,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "sessionCounter",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
@@ -431,6 +406,24 @@
 					}
 				],
 				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "_isWhitelisted",
+						"type": "bool"
+					}
+				],
+				"name": "updateWhitelist",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -504,7 +497,15 @@
 		"remappings": []
 	},
 	"sources": {
-		"@openzeppelin/contracts/access/Ownable.sol": {
+		"contracts/VotingSessions.sol": {
+			"keccak256": "0xc45311e434c2305db1557b252a9747932ebfae3b893027b1e087266130760b21",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://4bd1fcc516195f28c2d919595b66a2f7ba9cae2a5880b0338c9f04f3e59deca2",
+				"dweb:/ipfs/QmRBQ8jE5LuPPRuBiCfih65eR5ybGnV36ibpVSUz6rXTtv"
+			]
+		},
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {
 			"keccak256": "0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb",
 			"license": "MIT",
 			"urls": [
@@ -512,20 +513,12 @@
 				"dweb:/ipfs/QmfEckWLmZkDDcoWrkEvMWhms66xwTLff9DDhegYpvHo1a"
 			]
 		},
-		"@openzeppelin/contracts/utils/Context.sol": {
+		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Context.sol": {
 			"keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
 			"license": "MIT",
 			"urls": [
 				"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
-			]
-		},
-		"contracts/VotingSessions.sol": {
-			"keccak256": "0x7e30e4d06b75021ae6a6c66725cc57fd36d37a0434b3a99a2335b50a0e6f7a0e",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://8abd815e16793e5d9c86980e0174fab410fc5750e662eb06f1323c25024c0f1b",
-				"dweb:/ipfs/QmSJ3wLh9eooWTzJUbHLdfZE573Z3ykkDPofppWsyLuxmv"
 			]
 		}
 	},

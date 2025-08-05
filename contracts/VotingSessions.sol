@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity 0.8.30;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 
 contract Voting is Ownable {
 
@@ -15,7 +16,6 @@ contract Voting is Ownable {
     }
 
     struct Proposal {
-        uint proposalId; // à enlever
         string description;
         address submitter;
         uint voteCount;
@@ -23,168 +23,137 @@ contract Voting is Ownable {
 
     struct Session {
         uint id;
-        WorkflowStatus workflowStatus; // à mettre dans session pour multi
+        WorkflowStatus workflowStatus;
         uint proposalIdCounter;
         uint winningProposalId;
         uint highestVoteCount;
         Proposal[] proposals;
+        mapping (address => bool) hasVoted;
     }
-
+    
     mapping(address => bool) public whitelist;
-    mapping(uint => Session) private sessions;
-    uint public sessionCounter;
-    mapping(uint => mapping(address => bool)) private hasVotedInSession; // à ajouter pour gestion multi session
+    mapping (uint => Session) sessions;
+    uint sessionIdCounter;
 
-    // ======== EVENTS ==========
+    event WhitelistUpdated(address voterAddress, bool isWhitelisted);
     event NewVotingSession(uint sessionId);
     event WorkflowStatusChange(uint sessionId, WorkflowStatus previousStatus, WorkflowStatus newStatus);
     event ProposalRegistered(uint sessionId, uint proposalId);
     event Voted(uint sessionId, address voter, uint proposalId);
-    event WinnerDeclared(uint sessionId, uint proposalId);
+    event WinningProposition(uint sessionId, uint propositionId);
+    event RenewSession(uint sessionId);
 
-    constructor() Ownable(msg.sender) {}
-
-    // ===== Voters globaux =====
-    function addToWhitelist(address _voter) external onlyOwner {
-        require(!whitelist[_voter], "Already whitelisted");
-        whitelist[_voter] = true;
+    constructor() Ownable(msg.sender) {
     }
 
-    function removeFromWhitelist(address _voter) external onlyOwner {
-        require(whitelist[_voter], "Not in whitelist");
-        whitelist[_voter] = false;
+    function updateWhitelist(address _address, bool _isWhitelisted) public onlyOwner {
+        require(whitelist[_address] != _isWhitelisted, "whitelist is up to date");
+        whitelist[_address] = _isWhitelisted;
+        emit WhitelistUpdated(_address, true);
     }
 
-    function isWhitelisted(address _voter) external view returns (bool) {
-        return whitelist[_voter];
+    function isWhitelisted(address _address) public view returns (bool) {
+        return whitelist[_address];
     }
 
-    // ===== Sessions management =====
-    function createSession() external onlyOwner {
-        sessionCounter++;
-        Session storage s = sessions[sessionCounter];
-        s.id = sessionCounter;
-        s.workflowStatus = WorkflowStatus.RegisteringVoters;
-        emit NewVotingSession(sessionCounter);
+    function createSession() public onlyOwner {
+        sessionIdCounter++;
+        Session storage newSession = sessions[sessionIdCounter];
+        newSession.id = sessionIdCounter;
+        emit NewVotingSession(sessionIdCounter);
     }
 
-    function updateWorkflowStatus(uint sessionId, WorkflowStatus newStatus) internal {
-        Session storage s = sessions[sessionId];
-        emit WorkflowStatusChange(sessionId, s.workflowStatus, newStatus);
-        s.workflowStatus = newStatus;
+    function renewSession(Proposal[] memory bestProposals) public onlyOwner {
+        sessionIdCounter++;
+        Session storage newSession = sessions[sessionIdCounter];
+        newSession.id = sessionIdCounter;
+        for (uint i = 0; i < bestProposals.length; i++) {
+            newSession.proposals.push(bestProposals[i]);
+        }
+        emit NewVotingSession(sessionIdCounter);
     }
 
-    // ===== Proposal phase =====
-    function startProposalsRegistration(uint sessionId) external onlyOwner {
-        Session storage s = sessions[sessionId];
-        require(s.workflowStatus == WorkflowStatus.RegisteringVoters, "Wrong workflow status");
-        updateWorkflowStatus(sessionId, WorkflowStatus.ProposalsRegistrationStarted);
+    function startProposalsRegistration(uint sessionId) public onlyOwner {
+        Session storage newSession = sessions[sessionId];
+        require(newSession.workflowStatus == WorkflowStatus.RegisteringVoters);
+        newSession.workflowStatus = WorkflowStatus.ProposalsRegistrationStarted;
+        emit WorkflowStatusChange(sessionId, WorkflowStatus.RegisteringVoters, WorkflowStatus.ProposalsRegistrationStarted);
     }
 
-    function sendNewProposition(uint sessionId, string calldata _description) external {
-        Session storage s = sessions[sessionId];
-        require(s.workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Not proposal stage");
-        require(whitelist[msg.sender], "Not whitelisted");
-        require(bytes(_description).length > 0 && bytes(_description).length <= 256, "Invalid description size");
-
-        uint newId = s.proposalIdCounter++;
-        s.proposals.push(Proposal({
-            proposalId: newId,
-            description: _description,
-            submitter: msg.sender,
-            voteCount: 0
-        }));
-        emit ProposalRegistered(sessionId, newId);
+    function sendNewProposition(uint sessionId, string memory _description) public {
+        Session storage currentSession = sessions[sessionId];
+        require(currentSession.workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
+        require(whitelist[msg.sender], "You are not registered");
+        currentSession.proposals.push(Proposal(_description, msg.sender, 0));
+        emit ProposalRegistered(currentSession.id, currentSession.proposalIdCounter);
     }
 
-    function endProposalsRegistration(uint sessionId) external onlyOwner {
-        Session storage s = sessions[sessionId];
-        require(s.workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Not proposal stage");
-        require(s.proposals.length > 0, "No proposals submitted");
-        updateWorkflowStatus(sessionId, WorkflowStatus.ProposalsRegistrationEnded);
+    function getAllProposalsBySession(uint _sessionId) external view returns(Proposal[] memory) {
+        return sessions[_sessionId].proposals;
+    }
+    
+    function endProposalsRegistration(uint sessionId) public onlyOwner {
+        Session storage currentSession = sessions[sessionId];
+        require (currentSession.workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "Proposals registration not started");
+        require(currentSession.proposals.length > 0, "no proposals were registered");
+        currentSession.workflowStatus = WorkflowStatus.ProposalsRegistrationEnded;
+        emit WorkflowStatusChange(sessionId, WorkflowStatus.ProposalsRegistrationStarted, WorkflowStatus.ProposalsRegistrationEnded); 
     }
 
-    // ===== Voting phase =====
-    function startVotingSession(uint sessionId) external onlyOwner {
-        Session storage s = sessions[sessionId];
-        require(s.workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "Not ready for voting");
-        updateWorkflowStatus(sessionId, WorkflowStatus.VotingSessionStarted);
+    function startVotingSession(uint sessionId) public onlyOwner {
+        Session storage currentSession = sessions[sessionId];
+        require(currentSession.workflowStatus == WorkflowStatus.ProposalsRegistrationEnded, "Proposals registration not ended");
+        currentSession.workflowStatus = WorkflowStatus.VotingSessionStarted;
+        emit WorkflowStatusChange(sessionId, WorkflowStatus.ProposalsRegistrationEnded, WorkflowStatus.VotingSessionStarted); 
     }
-
-    function sendVote(uint sessionId, uint _proposalId) external {
-        Session storage s = sessions[sessionId];
-        require(s.workflowStatus == WorkflowStatus.VotingSessionStarted, "Voting not started");
-        require(whitelist[msg.sender], "Not whitelisted");
-        require(!hasVotedInSession[sessionId][msg.sender], "Already voted in this session");
-        require(_proposalId < s.proposals.length, "Invalid proposal ID");
-
-        s.proposals[_proposalId].voteCount++;
-        hasVotedInSession[sessionId][msg.sender] = true;
-
-        if (s.proposals[_proposalId].voteCount > s.highestVoteCount) {
-            s.highestVoteCount = s.proposals[_proposalId].voteCount;
+    
+    function sendVote(uint sessionId, uint _proposalId) public {
+        Session storage currentSession = sessions[sessionId];
+        require(currentSession.workflowStatus == WorkflowStatus.VotingSessionStarted, "registration did not started");
+        require(whitelist[msg.sender], "You are not registered");
+        require(!currentSession.hasVoted[msg.sender], "You have already vote");
+        Proposal storage proposal = currentSession.proposals[_proposalId];
+        proposal.voteCount++;
+        currentSession.hasVoted[msg.sender] = true;
+        if(proposal.voteCount > currentSession.highestVoteCount) { 
+            currentSession.highestVoteCount = proposal.voteCount;
         }
         emit Voted(sessionId, msg.sender, _proposalId);
     }
 
-    function endVotingSession(uint sessionId) external onlyOwner {
-        Session storage s = sessions[sessionId];
-        require(s.workflowStatus == WorkflowStatus.VotingSessionStarted, "Voting not started");
-        updateWorkflowStatus(sessionId, WorkflowStatus.VotingSessionEnded);
+
+    function endVotingSession(uint sessionId) public onlyOwner {
+        Session storage currentSession = sessions[sessionId];
+        require(currentSession.workflowStatus == WorkflowStatus.VotingSessionStarted, "Voting session not started");
+        require(currentSession.highestVoteCount > 0, "no votes were registered");
+        currentSession.workflowStatus = WorkflowStatus.VotingSessionEnded;
+        emit WorkflowStatusChange(sessionId, WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
 
-    // ===== Compute winner =====
-    function computeMostVotedProposal(uint sessionId) external onlyOwner {
-        Session storage s = sessions[sessionId];
-        require(s.workflowStatus == WorkflowStatus.VotingSessionEnded, "Voting session not ended");
-
-        uint countBest = 0;
-        for (uint i = 0; i < s.proposals.length; i++) {
-            if (s.proposals[i].voteCount == s.highestVoteCount && s.highestVoteCount > 0) {
-                countBest++;
+    function computeMostVotedProposal(uint sessionId) public {   
+        Session storage currentSession = sessions[sessionId];
+        require(currentSession.workflowStatus == WorkflowStatus.VotingSessionEnded, "Voting session did not end");
+        Proposal[] storage proposals = currentSession.proposals;
+        uint numberOfBestProposal;
+        for (uint i = 0; i < proposals.length; i++) {
+            if(proposals[i].voteCount == currentSession.highestVoteCount)
+            numberOfBestProposal++;
+        }
+        Proposal[] memory bestProposals = new Proposal[](numberOfBestProposal);
+        uint index;
+        for (uint i = 0; i < proposals.length; i++) {
+            if(proposals[i].voteCount == currentSession.highestVoteCount) {
+                bestProposals[index] = proposals[i];
+                currentSession.winningProposalId = i;
+                index++;
             }
         }
-
-        Proposal[] memory bestProposals = new Proposal[](countBest);
-        uint index = 0;
-        for (uint i = 0; i < s.proposals.length; i++) {
-            if (s.proposals[i].voteCount == s.highestVoteCount && s.highestVoteCount > 0) {
-                bestProposals[index++] = s.proposals[i];
-            }
+        if(bestProposals.length == 1) {
+            emit WinningProposition(sessionId, currentSession.winningProposalId);
         }
-
-        if (bestProposals.length == 1) {
-            s.winningProposalId = bestProposals[0].proposalId;
-            emit WinnerDeclared(sessionId, s.winningProposalId);
-            updateWorkflowStatus(sessionId, WorkflowStatus.VotesTallied);
-        } else {
-            sessionCounter++;
-            Session storage newSession = sessions[sessionCounter];
-            newSession.id = sessionCounter;
-            newSession.workflowStatus = WorkflowStatus.RegisteringVoters;
-
-            for (uint i = 0; i < bestProposals.length; i++) {
-                newSession.proposals.push(Proposal({
-                    proposalId: i,
-                    description: bestProposals[i].description,
-                    submitter: bestProposals[i].submitter,
-                    voteCount: 0
-                }));
-            }
-            emit NewVotingSession(sessionCounter);
+        else {
+            renewSession(bestProposals);
+            emit RenewSession(sessionId);
         }
-    }
-
-    // ===== Views =====
-    function getAllProposalsBySession(uint sessionId) external view returns (Proposal[] memory) {
-        return sessions[sessionId].proposals;
-    }
-
-    function hasVoted(uint sessionId, address voter) external view returns (bool) {
-        return hasVotedInSession[sessionId][voter];
-    }
-
-    function getWorkflowStatus(uint sessionId) external view returns (WorkflowStatus) {
-        return sessions[sessionId].workflowStatus;
     }
 }
