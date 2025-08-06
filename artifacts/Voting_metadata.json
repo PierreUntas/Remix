@@ -238,7 +238,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "getAllProposalsBySession",
+				"name": "getAllProposals",
 				"outputs": [
 					{
 						"components": [
@@ -261,6 +261,107 @@
 						"internalType": "struct Voting.Proposal[]",
 						"name": "",
 						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_sessionId",
+						"type": "uint256"
+					}
+				],
+				"name": "getMostVotedProposal",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "description",
+								"type": "string"
+							},
+							{
+								"internalType": "address",
+								"name": "submitter",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "voteCount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Voting.Proposal",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_sessionId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "proposalIndex",
+						"type": "uint256"
+					}
+				],
+				"name": "getProposalDetails",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "description",
+								"type": "string"
+							},
+							{
+								"internalType": "address",
+								"name": "submitter",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "voteCount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct Voting.Proposal",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "sessionId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "hasVoted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
 					}
 				],
 				"stateMutability": "view",
@@ -319,8 +420,13 @@
 							}
 						],
 						"internalType": "struct Voting.Proposal[]",
-						"name": "bestProposals",
+						"name": "_bestProposals",
 						"type": "tuple[]"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_parentSessionId",
+						"type": "uint256"
 					}
 				],
 				"name": "renewSession",
@@ -483,7 +589,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/VotingSessions.sol": "Voting"
+			"contracts/VintingV1.sol": "Voting"
 		},
 		"evmVersion": "prague",
 		"libraries": {},
@@ -497,12 +603,12 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/VotingSessions.sol": {
-			"keccak256": "0x183677e4df5f0694e225156f5b5a8ca455b10d7a17e2f19c4a363145ac268c39",
+		"contracts/VintingV1.sol": {
+			"keccak256": "0x730e93e8a4512ef6da118b6089846c499d3430f822829f184b214e8382969c62",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://63d4987724d3d7dae20e2326e2c6fe0a7d5f6c7334d89c08b2e0aeeb480391a9",
-				"dweb:/ipfs/QmdeLHK2GVHdovq4p7wKHipwJ64EPtx3KtUtB8HPn98LaV"
+				"bzz-raw://4610410e982170586872bbb56b4aa8faca541d1cc7637b30e4b2b429ccb1ccea",
+				"dweb:/ipfs/QmcWzeBcz8hmxX121NmmcQpuZYLhzmtG4psEutsxzCv8co"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol": {

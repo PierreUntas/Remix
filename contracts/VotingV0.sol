@@ -100,7 +100,7 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
 
-    // Penser a calculer les égalités et créer une nouvelle session de vote avec ces propositions
+    // Dans la V1 => Penser a calculer les égalités et créer une nouvelle session de vote avec ces propositions
     function computeMostVotedproposal2() public {
         require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Voting session not ended");
         uint winningIndex;

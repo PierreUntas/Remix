@@ -24,7 +24,6 @@ contract Voting is Ownable {
     struct Session {
         uint id;
         WorkflowStatus workflowStatus;
-        uint proposalIdCounter;
         uint winningProposalIndex;
         uint highestVoteCount;
         Proposal[] proposals;
@@ -49,7 +48,7 @@ contract Voting is Ownable {
     function updateWhitelist(address _address, bool _isWhitelisted) public onlyOwner {
         require(whitelist[_address] != _isWhitelisted, "whitelist is up to date");
         whitelist[_address] = _isWhitelisted;
-        emit WhitelistUpdated(_address, true);
+        emit WhitelistUpdated(_address, _isWhitelisted);
     }
 
     function isWhitelisted(address _address) public view returns (bool) {
@@ -85,7 +84,7 @@ contract Voting is Ownable {
         require(currentSession.workflowStatus == WorkflowStatus.ProposalsRegistrationStarted, "registration did not started");
         require(whitelist[msg.sender], "You are not registered");
         currentSession.proposals.push(Proposal(_description, msg.sender, 0));
-        emit ProposalRegistered(currentSession.id, currentSession.proposalIdCounter);
+        emit ProposalRegistered(currentSession.id, currentSession.proposals.length - 1);
     }
 
     function getAllProposalsBySession(uint _sessionId) external view returns(Proposal[] memory) {
@@ -129,7 +128,7 @@ contract Voting is Ownable {
         emit WorkflowStatusChange(sessionId, WorkflowStatus.VotingSessionStarted, WorkflowStatus.VotingSessionEnded);
     }
 
-    function computeMostVotedProposal(uint sessionId) public {   
+    function computeMostVotedProposal(uint sessionId) public onlyOwner {   
         Session storage currentSession = sessions[sessionId];
         require(currentSession.workflowStatus == WorkflowStatus.VotingSessionEnded, "Voting session did not end");
         Proposal[] storage proposals = currentSession.proposals;
@@ -156,3 +155,9 @@ contract Voting is Ownable {
         }
     }
 }
+
+// model Voter avec hasVoted et isRegistered ??
+// Ne passer que les descriptions et submitters dans le renew sessions
+// peut on créer un tableau de uint dynamique en memoire et push dedans
+// ajouter parentSessionId
+// ajouter tous les get
